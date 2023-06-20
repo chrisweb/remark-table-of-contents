@@ -4,9 +4,9 @@
     "description": "remark plugin to generate a table of contents (toc) which can be inserted in mdx via a placeholder or you use the output",
     "main": "./dist/index.js",
     "scripts": {
-        "build": "esbuild ./src/index.ts --bundle --minify --target=es2015 --outdir=dist && npm run types",
+        "build": "esbuild ./src/index.ts --format=esm --bundle --minify --target=es2015 --outdir=dist && npm run types",
         "lint": "eslint src",
-        "types": "tsc --declaration --emitDeclarationOnly --stripInternal --declarationDir dist"
+        "types": "tsc --declaration --emitDeclarationOnly --declarationDir dist"
     },
     "author": "",
     "license": "MIT",
