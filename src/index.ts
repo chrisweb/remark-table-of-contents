@@ -2,24 +2,11 @@ type Root = import('mdast').Root
 type Content = import('mdast').Content
 type Node = Root | Content
 
-//import type { Plugin } from 'unified'
 import { visit } from 'unist-util-visit'
 import { toString } from 'mdast-util-to-string'
 import { toc } from 'mdast-util-toc'
 
-/*type TOCItem = {
-    readonly value: string
-    readonly id: string
-    readonly level: number
-  }*/
-
 export const remarkTocMdx = () => {
-
-    const findNodeToReplace = (ast: Node) => {
-        
-
-
-    }
 
     return async (ast: Node) => {
 
@@ -41,13 +28,16 @@ export const remarkTocMdx = () => {
         return ast*/
 
         const result = toc(ast)
+
+        console.log('result: ', result)
+
         const list = result.map
 
         if (list === null) {
             return
         }
 
-        console.log(list)
+        console.log('list: ', list)
 
     }
 
