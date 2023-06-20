@@ -22,7 +22,7 @@
         "package*.json",
         "dist/*"
     ],
-    "types": "lib/index.d.ts",
+    "types": "./dist/index.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/chrisweb/remark-toc-mdx.git"
