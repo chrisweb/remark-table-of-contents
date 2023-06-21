@@ -29,7 +29,7 @@ export const remarkTocMdx = () => {
 
         const result = toc(ast)
 
-        console.log('result: ', result)
+        //console.log('result: ', result)
 
         const list = result.map
 
@@ -37,8 +37,8 @@ export const remarkTocMdx = () => {
             return
         }
 
-        console.log('list: ', list)
-        console.log('typeof list: ', typeof list)
+        //console.log('list: ', list)
+        //console.log('typeof list: ', typeof list)
 
         const index = ast.children.findIndex(
             (node) => node.type === 'code' && node.value === '%toc%'
