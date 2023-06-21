@@ -1,14 +1,13 @@
 import type { Plugin, Transformer } from 'unified'
 import type { Root } from 'mdast'
-//import { MdxJsxFlowElement } from 'mdast-util-mdx-jsx'
 import { toc } from 'mdast-util-toc'
 
-interface remarkTableOfContentsOptionsType {
+interface IRemarkTableOfContentsOptions {
     mdx?: boolean
 }
 
 const remarkTableOfContents: Plugin = function plugin(
-    options: remarkTableOfContentsOptionsType = {
+    options: IRemarkTableOfContentsOptions = {
         mdx: true
     },
 ): Transformer {
