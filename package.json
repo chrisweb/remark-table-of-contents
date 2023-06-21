@@ -12,10 +12,12 @@
     "license": "MIT",
     "keywords": [
         "remark",
+        "plugin",
         "mdx",
         "markdown",
         "toc",
-        "contents"
+        "table-of-contents",
+        "typescript"
     ],
     "type": "module",
     "files": [
