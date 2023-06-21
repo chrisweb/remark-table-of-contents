@@ -62,6 +62,8 @@ export const remarkTocMdx = () => {
             ast.children.slice(index + 1)
         );
 
+        return ast
+
     }
 
     
