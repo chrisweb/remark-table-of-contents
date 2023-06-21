@@ -44,6 +44,8 @@ export const remarkTocMdx = () => {
             (node) => node.type === 'text' && node.value === '%toc%'
         )
 
+        console.log('index: ', index)
+
         if (index === -1) {
             return
         }
@@ -64,7 +66,7 @@ export const remarkTocMdx = () => {
 
         console.log('new ast: ', ast)
 
-        return ast
+        //return ast
 
     }
 
