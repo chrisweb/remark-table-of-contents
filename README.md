@@ -3,7 +3,7 @@
 
 # remark-table-of-contents
 
-remark plugin to generate a table of contents (toc) which can be inserted in markdown or mdx documents via a placeholder
+remark plugin that generates a table of contents (toc) based on the headlines in your document, the toc then gets inserted in your markdown or mdx documents via a placeholder
 
 should work with markdown as well as MDX (need to do more testing, get more feedback), so far it has been tested in next.js (13)
 
