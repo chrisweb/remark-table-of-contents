@@ -1,5 +1,6 @@
 import type { Plugin, Transformer } from 'unified'
 import type { Root } from 'mdast'
+//import { MdxJsxFlowElement } from 'mdast-util-mdx-jsx'
 import { toc } from 'mdast-util-toc'
 
 interface remarkTableOfContentsOptionsType {
@@ -31,19 +32,34 @@ const remarkTableOfContents: Plugin = function plugin(
             return
         }
 
-        mdast.children = Array.prototype.concat(
-            mdast.children.slice(0, index),
-            {
-                type: options.mdx ? 'jsx' : 'html',
-                value: '<aside>',
-            },
-            result.map,
-            {
-                type: options.mdx ? 'jsx' : 'html',
-                value: '</aside>',
-            },
-            mdast.children.slice(index + 1)
-        )
+        if (options.mdx) {
+            mdast.children = Array.prototype.concat(
+                mdast.children.slice(0, index),
+                {
+                    type: 'mdxJsxFlowElement',
+                    name: 'aside',
+                    children: [result.map],
+                    attributes: []
+                },
+                
+                mdast.children.slice(index + 1)
+            )
+        } else {
+            mdast.children = Array.prototype.concat(
+                mdast.children.slice(0, index),
+                {
+                    type: 'html',
+                    value: '<aside>',
+                },
+                result.map,
+                {
+                    type: 'html',
+                    value: '</aside>',
+                },
+                mdast.children.slice(index + 1)
+            )
+        }
+
 
     }
 
