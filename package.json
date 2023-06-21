@@ -5,7 +5,7 @@
     "main": "./dist/index.js",
     "scripts": {
         "build": "esbuild ./src/index.ts --format=esm --bundle --minify --target=es2015 --outdir=dist && npm run types",
-        "lint": "eslint src",
+        "lint": "npx eslint src/",
         "types": "tsc --declaration --emitDeclarationOnly --declarationDir dist"
     },
     "author": "",
@@ -29,12 +29,13 @@
     },
     "bugs": "https://github.com/chrisweb/remark-toc-mdx/issues",
     "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "5.60.0",
+        "@typescript-eslint/parser": "5.60.0",
         "esbuild": "0.18.4",
         "eslint": "8.43.0",
         "mdast": "3.0.0",
         "mdast-util-toc": "6.1.1",
         "typescript": "5.1.3",
-        "unist-util-visit": "4.1.2",
         "unified": "10.1.2"
     }
 }
