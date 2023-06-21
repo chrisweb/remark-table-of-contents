@@ -55,12 +55,12 @@ export const remarkTocMdx = () => {
             ast.children.slice(0, index),
             {
                 type: 'html',
-                value: '<aside>',
+                value: '<div>',
             },
             result.map,
             {
                 type: 'html',
-                value: '</aside>',
+                value: '</div>',
             },
             ast.children.slice(index + 1)
         );
