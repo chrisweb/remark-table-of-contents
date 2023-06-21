@@ -41,7 +41,7 @@ export const remarkTocMdx = () => {
         //console.log('typeof list: ', typeof list)
 
         const index = ast.children.findIndex(
-            (node) => node.type === 'text' && node.value === '%toc%'
+            (node) => node.type === 'paragraph' && node.children[0].type === 'text' && node.children[0].value === '%toc%'
         )
 
         console.log('ast: ', ast)
