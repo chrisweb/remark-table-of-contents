@@ -1,76 +1,52 @@
-type Root = import('mdast').Root
-//type Content = import('mdast').Content
-//type Node = Root | Content
-
-import { visit } from 'unist-util-visit'
-import { toString } from 'mdast-util-to-string'
+import type { Plugin, Transformer } from 'unified'
+import type { Root } from 'mdast'
 import { toc } from 'mdast-util-toc'
 
-export const remarkTocMdx = () => {
+interface remarkTableOfContentsOptionsType {
+    mdx?: boolean
+}
 
-    return async (ast: Root) => {
+const remarkTableOfContents: Plugin = function plugin(
+    options: remarkTableOfContentsOptionsType = {
+        mdx: true
+    },
+): Transformer {
 
-        //const headings: TOCItem[] = []
+    return async (ast) => {
 
-        /*visit(ast, 'heading', (child) => {
+        const mdast = ast as Root
 
-            const value = toString(child)
-
-            // depth:1 headings are titles and not included in the TOC
-            if (!value || child.depth < 2) {
-                return
-            }
-
-            console.log(child)
-
-        })
-
-        return ast*/
-
-        const result = toc(ast)
-
-        //console.log('result: ', result)
-
+        const result = toc(mdast)
         const list = result.map
 
         if (list === null) {
             return
         }
 
-        //console.log('list: ', list)
-        //console.log('typeof list: ', typeof list)
-
-        const index = ast.children.findIndex(
+        const index = mdast.children.findIndex(
             (node) => node.type === 'paragraph' && node.children[0].type === 'text' && node.children[0].value === '%toc%'
         )
-
-        console.log('ast: ', ast)
-        console.log('index: ', index)
 
         if (index === -1) {
             return
         }
 
-        ast.children = Array.prototype.concat(
-            ast.children.slice(0, index),
+        mdast.children = Array.prototype.concat(
+            mdast.children.slice(0, index),
             {
-                type: 'html',
-                value: '<div>',
+                type: options.mdx ? 'jsx' : 'html',
+                value: '<aside>',
             },
             result.map,
             {
-                type: 'html',
-                value: '</div>',
+                type: options.mdx ? 'jsx' : 'html',
+                value: '</aside>',
             },
-            ast.children.slice(index + 1)
-        );
-
-        console.log('new ast: ', ast)
-
-        //return ast
+            mdast.children.slice(index + 1)
+        )
 
     }
 
-    
-
 }
+
+export { remarkTableOfContents }
