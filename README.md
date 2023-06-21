@@ -1,8 +1,7 @@
 [![npm version](https://img.shields.io/npm/v/remark-table-of-contents.svg?style=flat)](https://www.npmjs.com/package/remark-table-of-contents)
-[![minified size](https://img.shields.io/bundlephobia/min/remark-table-of-contents?style=flat)](https://www.npmjs.com/package/remark-table-of-contents)
 [![GitHub license](https://img.shields.io/github/license/chrisweb/remark-table-of-contents?style=flat)](https://github.com/chrisweb/remark-table-of-contents/blob/master/LICENSE)
 
-# remark-toc-mdx
+# remark-table-of-contents
 
 remark plugin to generate a table of contents (toc) which can be inserted in markdown or mdx documents via a placeholder
 
