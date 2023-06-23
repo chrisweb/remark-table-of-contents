@@ -92,7 +92,9 @@ the output will look like this:
 
 `options` (optional)
 
-`options.mdx` (`boolean`, default: true)
+* `options.mdx` (`boolean`, default: true) if you use mdx-js leave it to true, if you use markdown set it to false
+* `options.containerTagName` (`string`, default: 'aside') chose an element for the container that is around the toc, can by any html element you want, a `div`, a `section` ...
+* `options.hasContainer` (`boolean`, default: true) by default the toc is in a container, set to false to not use a container
 
 let's the plugin know if you are using mdx (mdx:true) or markdown (mdx: false)
 
@@ -107,3 +109,8 @@ this plugin uses [mdast-util-toc](https://github.com/syntax-tree/mdast-util-toc)
 * `tight` (`boolean`, default: `false`) whether to compile list items tightly
 * `ordered` (`boolean`, default: `false`) whether to compile list items as an ordered list, otherwise they are unordered
 * `prefix` (`string`, optional) add a prefix to links to headings in the table of contents. Useful for example when later going from mdast to hast and sanitizing with `hast-util-sanitize`.
+
+## TODOs
+
+* add a nav element around the toc, make it optional
+* make the placeholder string customizable so that it can be changed to whatever string the dev wants to use

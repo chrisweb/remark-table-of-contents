@@ -1,6 +1,6 @@
 {
     "name": "remark-table-of-contents",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "remark plugin to generate a table of contents (toc) which can be inserted in mdx via a placeholder or you use the output",
     "main": "./dist/index.js",
     "scripts": {
@@ -36,7 +36,9 @@
         "esbuild": "0.18.6",
         "eslint": "8.43.0",
         "mdast": "3.0.0",
+        "mdast-util-mdx-jsx": "2.1.4",
         "mdast-util-toc": "6.1.1",
+        "hast-util-is-element": "2.1.3",
         "typescript": "5.1.3",
         "unified": "10.1.2"
     }
