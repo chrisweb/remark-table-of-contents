@@ -2,7 +2,7 @@ import type { Plugin, Transformer } from 'unified'
 import type { Root } from 'mdast'
 import { toc, Options } from 'mdast-util-toc'
 
-interface IRemarkTableOfContentsOptions extends Options {
+export interface IRemarkTableOfContentsOptions extends Options {
     mdx?: boolean
 }
 
