@@ -1,6 +1,6 @@
 {
     "name": "remark-table-of-contents",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "remark plugin to generate a table of contents (toc) which can be inserted in mdx via a placeholder or you use the output",
     "main": "./dist/index.js",
     "scripts": {
