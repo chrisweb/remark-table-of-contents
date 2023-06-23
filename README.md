@@ -30,7 +30,7 @@ const nextConfig = (/*phase*/) => {
     const withMDX = WithMDX({
         extension: /\.mdx?$/,
         options: {
-            remarkPlugins: [remarkTableOfContents],
+            remarkPlugins: [[remarkTableOfContents, { tight: true }]],
             rehypePlugins: [],
         },
     })
@@ -52,6 +52,8 @@ const nextConfig = (/*phase*/) => {
 
 export default nextConfig
 ```
+
+Note: I have passed an option from **mdast-util-toc** to make the table of contents more compact, for a full list of options check out the [options section](#options) below
 
 then create an mdx document, for example `app/articles/page.mdx` and add some content with headings and the **table of contents placeholder** (put the placeholder in the document, where you want the toc to be displayed, can be anywhere you want):
 
@@ -90,13 +92,13 @@ the output will look like this:
 
 `options` (optional)
 
-`options.mdx` (boolean, default: true)
+`options.mdx` (`boolean`, default: true)
 
 let's the plugin know if you are using mdx (mdx:true) or markdown (mdx: false)
 
 `options.*`
 
-this plugin uses [mdast-util-toc](https://github.com/syntax-tree/mdast-util-toc) to generate the toc, which means all **mdast-util-toc** options are supported:
+this plugin uses [mdast-util-toc](https://github.com/syntax-tree/mdast-util-toc) under the hood, to generate the toc, which means all **mdast-util-toc** options are supported as well:
 
 * `heading` (`string`, optional) heading to look for, wrapped in `new RegExp('^(' + value + ')$', 'i')`
 * `maxDepth` (`number`, default: `6`) maximum heading depth to include in the table of contents. This is inclusive: when set to `3`, level three headings are included (those with three hashes, `###`)
