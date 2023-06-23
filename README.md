@@ -112,5 +112,6 @@ this plugin uses [mdast-util-toc](https://github.com/syntax-tree/mdast-util-toc)
 
 ## TODOs
 
-* add a nav element around the toc, make it optional
+* add a nav element around the toc, make it optional (or container could be one or more elements? probably more difficult to validate)
 * make the placeholder string customizable so that it can be changed to whatever string the dev wants to use
+* add an option to be able to set a class on the container (or allow any attributes?)
