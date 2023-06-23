@@ -16,7 +16,11 @@ const remarkTableOfContents: Plugin = function plugin(
 
         const mdast = ast as Root
 
-        const result = toc(mdast)
+        // remove the one property that is not a toc option
+        const { mdx, ...tocOptions } = options
+
+        const result = toc(mdast, tocOptions)
+
         const list = result.map
 
         if (list === null) {
@@ -31,7 +35,7 @@ const remarkTableOfContents: Plugin = function plugin(
             return
         }
 
-        if (options.mdx) {
+        if (mdx) {
             mdast.children = Array.prototype.concat(
                 mdast.children.slice(0, index),
                 {
@@ -40,7 +44,6 @@ const remarkTableOfContents: Plugin = function plugin(
                     children: [result.map],
                     attributes: []
                 },
-                
                 mdast.children.slice(index + 1)
             )
         } else {
