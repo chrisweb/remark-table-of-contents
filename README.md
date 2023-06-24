@@ -118,7 +118,7 @@ this plugin uses [mdast-util-toc](https://github.com/syntax-tree/mdast-util-toc)
 
 ## TODOs
 
-* right now the toc placeholder can not be inside of something, for example if you put it into an html element then the plugin won't find the placeholder, maybe replacing my simple search with [unist-util-visit](https://www.npmjs.com/package/unist-util-visit) could allow devs to put the toc inside whatever they want!?
+* right now the toc placeholder can not be inside of something, for example if you put it into an HTML element then the plugin won't find the placeholder, maybe replacing my simple search with [unist-util-visit](https://www.npmjs.com/package/unist-util-visit) could allow devs to put the toc inside whatever they want!?
 
 ## contributing
 
