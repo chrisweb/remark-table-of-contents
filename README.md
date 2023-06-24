@@ -93,10 +93,8 @@ the output will look like this:
 `options` (optional)
 
 * `options.mdx` (`boolean`, default: true) if you use mdx-js leave it to true, if you use markdown set it to false
-* `options.containerTagName` (`string`, default: 'aside') chose an element for the container that is around the toc, can by any html element you want, a `div`, a `section` ...
+* `options.containerTagName` (`string`, default: 'aside') chose an element for the container that is around the toc, can be any HTML element you want, a `div`, a `section` ...
 * `options.hasContainer` (`boolean`, default: true) by default the toc is in a container, set to false to not use a container
-
-let's the plugin know if you are using mdx (mdx:true) or markdown (mdx: false)
 
 `options.*`
 
