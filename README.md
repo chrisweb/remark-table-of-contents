@@ -5,9 +5,11 @@
 
 remark plugin that generates a table of contents (toc) based on the headlines in your document, the toc then gets inserted in your markdown or mdx documents via a placeholder
 
-should work with markdown as well as MDX (need to do more testing, get more feedback), so far it has been tested in next.js (13)
+should work with markdown as well as MDX, so far it has been tested in next.js 13.x (see [examples folder](./examples/next-js-example/README.md) for a demo)
 
-for now the table of contents (toc) headings list will be surrounded by an `<aside></aside>` html element, in the future it should be possible to customize if and what is around the toc
+by default the table of contents (toc) headings list is surrounded by an `<aside id="tocContainer"></aside>` html element and inside of it is a `<nav></nav>`, you can use the options to add attributes to both and disable their use if that's what you require
+
+Note: if you use this plugin, it is highly recommended that you also use [rehype-slug](https://www.npmjs.com/package/rehype-slug) to add unique IDs to all headings which don't already have one (it uses [github-slugger](https://www.npmjs.com/package/github-slugger) under the hood) and also [rehype-autolink-headings](https://www.npmjs.com/package/rehype-autolink-headings) which is another rehype plugin that will automatically add links to your headings back to themselves (to create the feature you often see on blogs or in documentations, that allows you click on a heading which turns the browser URL into the a URL containing the heading ID and then you can copy the URL from the browser to share with someone)
 
 ## installation
 
@@ -53,7 +55,7 @@ const nextConfig = (/*phase*/) => {
 export default nextConfig
 ```
 
-Note: I have passed an option from **mdast-util-toc** to make the table of contents more compact, I also customized the container element by adding some attributes, for a full list of options check out the [options section](#options) below
+Note: I have customized the (aside) container element by adding some attributes, for a full list of options check out the [options section](#options) below
 
 then create an mdx document, for example `app/articles/page.mdx` and add some content with headings and the **table of contents placeholder** (put the placeholder in the document, where you want the toc to be displayed, can be anywhere you want):
 
@@ -105,16 +107,6 @@ all options have default values which for most use cases should be enough, meani
 * `containerAttributes` (`object`, default {}) an object, where the keys are the attribute names and the values are the attribute values, allows you for example to add an `id` html attribute or a `class` attribute where the value is an array of class names
 * `hasNav` (`boolean`, default: true) by default the toc is inside a `<nav>` element, set to false to not use the nav element
 * `navAttributes` (`object`, default {}) an object, where the keys are the attribute names and the values are the attribute values, allows you for example to add an `id` html attribute or a `class` attribute where the value is an array of class names
-
-this plugin uses [mdast-util-toc](https://github.com/syntax-tree/mdast-util-toc) under the hood, to generate the toc, which means all **mdast-util-toc** options are supported as well:
-
-* `heading` (`string`, optional) heading to look for, wrapped in `new RegExp('^(' + value + ')$', 'i')`
-* `maxDepth` (`number`, default: `6`) maximum heading depth to include in the table of contents. This is inclusive: when set to `3`, level three headings are included (those with three hashes, `###`)
-* `skip` (`string`, optional) headings to skip, wrapped in `new RegExp('^(' + value + ')$', 'i')`. Any heading matching this expression will not be present in the table of contents
-* `parents` ([`Test`](https://github.com/syntax-tree/unist-util-is#test), default: `tree`) allow headings to be children of certain node types. Can by any [`unist-util-is`](https://github.com/syntax-tree/unist-util-is#isnode-test-index-parent-context) compatible test
-* `tight` (`boolean`, default: `false`) whether to compile list items tightly
-* `ordered` (`boolean`, default: `false`) whether to compile list items as an ordered list, otherwise they are unordered
-* `prefix` (`string`, optional) add a prefix to links to headings in the table of contents. Useful for example when later going from mdast to hast and sanitizing with `hast-util-sanitize`.
 
 ## TODOs
 

@@ -1,13 +1,31 @@
 import type { Plugin, Transformer } from 'unified'
-import type { Root, Content } from 'mdast'
 import type { MdxJsxFlowElement, MdxJsxAttribute } from 'mdast-util-mdx-jsx'
 import { toc, Options } from 'mdast-util-toc'
 import { isElement, Element } from 'hast-util-is-element'
 import { htmlEscape } from 'escape-goat'
+import { visit } from 'unist-util-visit'
+import Slugger from 'github-slugger'
+import type { Root, Content, List, ListItem, PhrasingContent } from 'mdast'
+import { toString } from 'mdast-util-to-string'
 
 export type IHtmlAttributes = Record<string, string | number | boolean | readonly string[]>
 
-export interface IRemarkTableOfContentsOptions extends Options {
+export interface IMdxTocOptions {
+    maxDepth: number
+    isListOrdered: boolean
+}
+
+interface IHeadingResult {
+    depth: number
+    children: PhrasingContent[]
+    id: string
+}
+
+type Result = {
+    map: List | null
+}
+
+export interface IRemarkTableOfContentsOptions {
     mdx?: boolean
     containerTagName?: string
     hasContainer?: boolean
@@ -15,6 +33,8 @@ export interface IRemarkTableOfContentsOptions extends Options {
     hasNav?: boolean
     navAttributes?: IHtmlAttributes
     placeholder?: string
+    maxDepth?: number
+    isListOrdered?: boolean
 }
 
 interface ISanitizeAttributes {
@@ -74,13 +94,55 @@ const stringifyAttributes = (attributes: ISanitizeAttributes[]): string => {
 
 }
 
+const findHeadings = (tree: Root, options: IMdxTocOptions): IHeadingResult[] => {
+
+    const headings: IHeadingResult[] = []
+    const slugger = new Slugger()
+
+    visit(tree, 'heading', node => {
+
+        if (node.depth <= options.maxDepth) {
+
+            const nodeAsString = toString(node)
+            const headingId = slugger.slug(nodeAsString)
+
+            headings.push({
+                depth: node.depth,
+                children: node.children,
+                id: headingId
+            })
+        }
+    })
+
+    return headings
+}
+
+const mdxToc = (tree: Root, options: IMdxTocOptions): Result => {
+
+    const headings = findHeadings(tree, options)
+
+    console.log(headings)
+
+    const list: List = {
+        type: 'list',
+        ordered: options.isListOrdered,
+        spread: false,
+        children: []
+    }
+
+    return {
+        map: list
+    }
+
+}
+
 const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfContentsOptions = {}): Transformer {
 
     return async (ast) => {
 
         const mdast = ast as Root
 
-        const { mdx, placeholder, hasContainer, containerTagName, containerAttributes, hasNav, navAttributes, ...tocOptions } = options
+        const { mdx, placeholder, hasContainer, containerTagName, containerAttributes, hasNav, navAttributes, maxDepth, isListOrdered } = options
 
         // default values
         const mdxOption = mdx !== undefined ? mdx : true
@@ -90,9 +152,18 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
         const containerAttributesOption = containerAttributes !== undefined ? containerAttributes : {}
         const hasNavOption = hasNav !== undefined ? hasNav : true
         const navAttributesOption = navAttributes !== undefined ? navAttributes : {}
-        const remarkTocOptions = tocOptions !== undefined ? tocOptions : {}
+        const maxDepthOption = maxDepth !== undefined ? maxDepth : 6
+        const isListOrderedOption = isListOrdered !== undefined ? isListOrdered : false
 
-        const result = toc(mdast, remarkTocOptions)
+        const mdxTocOptions: IMdxTocOptions = {
+            maxDepth: maxDepthOption,
+            isListOrdered: isListOrderedOption,
+        }
+
+        //const result = toc(mdast, remarkTocOptions)
+        const result = mdxToc (mdast, mdxTocOptions)
+
+        console.log(result)
 
         const list = result.map
 

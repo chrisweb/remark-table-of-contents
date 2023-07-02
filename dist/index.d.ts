@@ -1,7 +1,10 @@
 import type { Plugin } from 'unified';
-import { Options } from 'mdast-util-toc';
 export type IHtmlAttributes = Record<string, string | number | boolean | readonly string[]>;
-export interface IRemarkTableOfContentsOptions extends Options {
+export interface IMdxTocOptions {
+    maxDepth: number;
+    isListOrdered: boolean;
+}
+export interface IRemarkTableOfContentsOptions {
     mdx?: boolean;
     containerTagName?: string;
     hasContainer?: boolean;
@@ -9,6 +12,8 @@ export interface IRemarkTableOfContentsOptions extends Options {
     hasNav?: boolean;
     navAttributes?: IHtmlAttributes;
     placeholder?: string;
+    maxDepth?: number;
+    isListOrdered?: boolean;
 }
 declare const remarkTableOfContents: Plugin;
 export { remarkTableOfContents };
