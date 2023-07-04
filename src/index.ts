@@ -1,12 +1,12 @@
 import type { Plugin, Transformer } from 'unified'
 import type { MdxJsxFlowElement, MdxJsxAttribute } from 'mdast-util-mdx-jsx'
-import { toc, Options } from 'mdast-util-toc'
 import { isElement, Element } from 'hast-util-is-element'
 import { htmlEscape } from 'escape-goat'
 import { visit } from 'unist-util-visit'
 import Slugger from 'github-slugger'
-import type { Root, Content, List, ListItem, PhrasingContent } from 'mdast'
+import type { Root, Content, List, ListItem, Paragraph, Link, PhrasingContent, StaticPhrasingContent, ThematicBreak } from 'mdast'
 import { toString } from 'mdast-util-to-string'
+import extend from 'extend'
 
 export type IHtmlAttributes = Record<string, string | number | boolean | readonly string[]>
 
@@ -23,6 +23,10 @@ interface IHeadingResult {
 
 type Result = {
     map: List | null
+}
+
+interface IListWithParentList extends List {
+    parent: IListWithParentList | null
 }
 
 export interface IRemarkTableOfContentsOptions {
@@ -121,19 +125,168 @@ const mdxToc = (tree: Root, options: IMdxTocOptions): Result => {
 
     const headings = findHeadings(tree, options)
 
-    console.log(headings)
+    let baseList: IListWithParentList | null = null
 
-    const list: List = {
-        type: 'list',
-        ordered: options.isListOrdered,
-        spread: false,
-        children: []
+    if (headings.length > 0) {
+
+        baseList = {
+            type: 'list',
+            ordered: options.isListOrdered,
+            spread: false,
+            children: [],
+            parent: null,
+        }
+
+        const currentList = baseList
+        const currentDepth = 1
+
+        headings.forEach((heading) => {
+            buildToc(heading, currentList, currentDepth, options)
+        })
+
     }
 
     return {
-        map: list
+        map: baseList
     }
 
+}
+
+const buildToc = (heading: IHeadingResult, currentList: IListWithParentList, currentDepth: number, options: IMdxTocOptions) => {
+
+    console.log('heading: ', heading)
+    console.log('currentList: ', currentList)
+    console.log('currentDepth: ', currentDepth)
+    
+
+    if (heading.depth > currentDepth) {
+
+        
+
+        // find the last listItem of the current list
+        const lastListItem = currentList.children[currentList.children.length - 1]
+
+        if (lastListItem.children.length === 0) {
+
+            console.log('> add a list to item')
+
+            // add a list to that last listItem
+            currentList = addList(currentList, lastListItem, options)
+            // increase the currentDepth by one
+            currentDepth++
+            // enter the function again
+            buildToc(heading, currentList, currentDepth, options)
+        } else if (lastListItem.children.length > 0 && lastListItem.children[lastListItem.children.length - 1].type === 'list') {
+
+            console.log('> found previous list, moving up currentDepth')
+
+            // add a list to that last listItem
+            currentList = lastListItem.children[lastListItem.children.length - 1] as IListWithParentList
+            // increase the currentDepth by one
+            currentDepth++
+            // enter the function again
+            buildToc(heading, currentList, currentDepth, options)
+        }
+    } else if (heading.depth === currentDepth) {
+
+        console.log('> add an item to list')
+
+        // add a list item to the current list
+        addItem(heading, currentList)
+    } else if (heading.depth < currentDepth && currentList.parent !== null) {
+
+        console.log('> go to parent list')
+
+        // make the parent of the currentList the new currentList
+        currentList = currentList.parent
+        // decrease the currentDepth by one
+        currentDepth--
+        // enter the function again
+        buildToc(heading, currentList, currentDepth, options)
+    }
+
+    console.log('----------------------')
+
+}
+
+const addItem = (heading: IHeadingResult, currentList: IListWithParentList) => {
+
+    const link: Link = {
+        type: 'link',
+        title: null,
+        url: '#' + heading.id,
+        children: all(heading.children),
+    }
+
+    const paragraph: Paragraph = {
+        type: 'paragraph',
+        children: [link],
+    }
+
+    const listItem: ListItem = {
+        type: 'listItem',
+        spread: false,
+        children: [paragraph]
+    }
+
+    currentList.children.push(listItem)
+
+}
+
+const addList = (currentList: IListWithParentList, item: ListItem, options: IMdxTocOptions): IListWithParentList => {
+
+    const list: IListWithParentList = {
+        type: 'list',
+        ordered: options.isListOrdered,
+        spread: false,
+        children: [],
+        parent: currentList,
+    }
+
+    item.children.push(list)
+
+    return list
+
+}
+
+/* followingt code is a copy from mdast-util-toc */
+const all = (nodes: PhrasingContent[]): StaticPhrasingContent[] => {
+
+    let result: StaticPhrasingContent[] = []
+    let index = -1
+
+    if (nodes) {
+        while (++index < nodes.length) {
+            result = result.concat(one(nodes[index]))
+        }
+    }
+
+    return result
+}
+
+
+const one = (node: PhrasingContent): StaticPhrasingContent | StaticPhrasingContent[] => {
+    if (node.type === 'footnoteReference') {
+        return []
+    }
+
+    if (
+        node.type === 'link' ||
+        node.type === 'linkReference' ||
+        node.type === 'footnote'
+    ) {
+        return all(node.children)
+    }
+
+    if ('children' in node) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { children, position, ...copy } = node
+        return Object.assign(extend(true, {}, copy), { children: all(node.children) })
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { position, ...copy } = node
+    return extend(true, {}, copy)
 }
 
 const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfContentsOptions = {}): Transformer {
@@ -161,7 +314,7 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
         }
 
         //const result = toc(mdast, remarkTocOptions)
-        const result = mdxToc (mdast, mdxTocOptions)
+        const result = mdxToc(mdast, mdxTocOptions)
 
         console.log(result)
 
@@ -232,7 +385,7 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
                     children: [navElement !== undefined ? navElement : list],
                     attributes: containerAttributesMdx
                 }
-                
+
                 children.push(containerElement)
             } else {
                 children.push(navElement !== undefined ? navElement : list)
