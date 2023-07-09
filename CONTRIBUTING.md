@@ -20,4 +20,4 @@ now finally you can commit your local changes to your fork (if your commit is re
 
 `git commit -m "#TICKER_NUMBER commit message"`
 
-now go to the github page of your fork and hit the pull request button to open a pull request from your fork to this projects github repository  
+now go to the github page of your fork and hit the pull request button to open a pull request from your fork to this projects github repository
