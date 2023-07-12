@@ -110,7 +110,6 @@ all options have default values which for most use cases should be enough, meani
 
 ## TODOs
 
-* what happens if first depth is for example 3 and not 1
 * can we also search for h1-h6 jsx if the mode is mdx
 * do we need a slugger, does the rehype slug not already do what we need
 * if we have two headings with same title does rehype slugger fix it for us
@@ -123,3 +122,9 @@ all options have default values which for most use cases should be enough, meani
 PRs are welcome 😉
 
 To get started, please check out the [CONTRIBUTING.md](CONTRIBUTING.md) guide of this project
+
+## changelog
+
+* complete rewrite of the toc engine, no dependency anymore, toc can bow be inside jsx (any element)
+* add function to normalize all depth if minimum depth is not 1, set minimum to 1 and change all depth accordingly
+
