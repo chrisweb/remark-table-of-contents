@@ -141,13 +141,17 @@ const mdxToc = (tree: Root, options: IMdxTocOptions): Result => {
 
     if (headings.length > 0) {
 
-        baseList = {
-            type: 'list',
-            ordered: options.isListOrdered,
-            spread: false,
-            children: [],
-            parent: null,
+        const lowestDepth = Math.min(...headings.map(heading => heading.depth))
+
+        if (lowestDepth !== 1) {
+            // change the depth of each heading, make the lowest 1...
+            headings.forEach((heading) => {
+                const depthToSubstract = lowestDepth - 1
+                heading.depth = heading.depth - depthToSubstract
+            })
         }
+
+        baseList = createList(null, options)
 
         let currentList = baseList
         let currentDepth = 1
@@ -253,7 +257,7 @@ const createItem = (heading: IHeadingResult | null): ListItem => {
 
 }
 
-const createList = (currentList: IListWithParentList, options: IMdxTocOptions): IListWithParentList => {
+const createList = (currentList: IListWithParentList | null, options: IMdxTocOptions): IListWithParentList => {
 
     const list: IListWithParentList = {
         type: 'list',
