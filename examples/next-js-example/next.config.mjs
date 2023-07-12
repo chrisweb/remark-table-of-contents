@@ -6,7 +6,7 @@ const nextConfig = (/*phase*/) => {
     const withMDX = WithMDX({
         extension: /\.mdx?$/,
         options: {
-            remarkPlugins: [[remarkTableOfContents, { tight: true }]],
+            remarkPlugins: [[remarkTableOfContents, { tight: true, isListOrdered: true }]],
             rehypePlugins: [],
         },
     })

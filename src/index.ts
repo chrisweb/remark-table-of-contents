@@ -41,6 +41,18 @@ export interface IRemarkTableOfContentsOptions {
     isListOrdered?: boolean
 }
 
+interface IRemarkTableOfContentsInternalOptions {
+    mdx: boolean
+    containerTagName: string
+    hasContainer: boolean
+    containerAttributes: IHtmlAttributes
+    hasNav: boolean
+    navAttributes: IHtmlAttributes
+    placeholder: string
+    maxDepth: number
+    isListOrdered: boolean
+}
+
 interface ISanitizeAttributes {
     name: string
     value: string
@@ -137,11 +149,62 @@ const mdxToc = (tree: Root, options: IMdxTocOptions): Result => {
             parent: null,
         }
 
-        const currentList = baseList
-        const currentDepth = 1
+        let currentList = baseList
+        let currentDepth = 1
 
         headings.forEach((heading) => {
-            buildToc(heading, currentList, currentDepth, options)
+
+            if (heading.depth > currentDepth) {
+
+                // create a list inside of a list items until we reach the
+                // required depth
+                while (heading.depth > currentDepth) {
+
+                    let currentItem: ListItem
+
+                    // if there is no current list item
+                    if (currentList.children.length === 0) {
+                        // create a new empty list item
+                        currentItem = createItem(null)
+                        // add new list item to current list
+                        currentList.children.push(currentItem)
+                    } else {
+                        // get the last list item from the current list
+                        currentItem = currentList.children[currentList.children.length - 1]
+                    }
+
+                    // create a new list
+                    currentList = createList(currentList, options)
+                    // add list to current list item
+                    currentItem.children.push(currentList)
+                    // increase the current depth by 1
+                    currentDepth++
+
+                }
+
+            } else if (heading.depth < currentDepth && currentList.parent !== null) {
+
+                // go back to a parent list until we reach the 
+                // required depth
+                while (heading.depth < currentDepth) {
+
+                    if (currentList.parent !== null) {
+                        // make the parent of the current list the new currentList
+                        currentList = currentList.parent
+                        // decrease the current depth by one
+                        currentDepth--
+                    }
+
+                }
+
+            }
+
+            // create a list item
+            const listItem = createItem(heading)
+
+            // add list item to list
+            currentList.children.push(listItem)
+
         })
 
     }
@@ -152,88 +215,45 @@ const mdxToc = (tree: Root, options: IMdxTocOptions): Result => {
 
 }
 
-const buildToc = (heading: IHeadingResult, currentList: IListWithParentList, currentDepth: number, options: IMdxTocOptions) => {
+const createItem = (heading: IHeadingResult | null): ListItem => {
 
-    console.log('heading: ', heading)
-    console.log('currentList: ', currentList)
-    console.log('currentDepth: ', currentDepth)
-    
+    let listItem: ListItem
 
-    if (heading.depth > currentDepth) {
+    if (heading === null) {
 
-        
-
-        // find the last listItem of the current list
-        const lastListItem = currentList.children[currentList.children.length - 1]
-
-        if (lastListItem.children.length === 0) {
-
-            console.log('> add a list to item')
-
-            // add a list to that last listItem
-            currentList = addList(currentList, lastListItem, options)
-            // increase the currentDepth by one
-            currentDepth++
-            // enter the function again
-            buildToc(heading, currentList, currentDepth, options)
-        } else if (lastListItem.children.length > 0 && lastListItem.children[lastListItem.children.length - 1].type === 'list') {
-
-            console.log('> found previous list, moving up currentDepth')
-
-            // add a list to that last listItem
-            currentList = lastListItem.children[lastListItem.children.length - 1] as IListWithParentList
-            // increase the currentDepth by one
-            currentDepth++
-            // enter the function again
-            buildToc(heading, currentList, currentDepth, options)
+        listItem = {
+            type: 'listItem',
+            spread: false,
+            children: []
         }
-    } else if (heading.depth === currentDepth) {
 
-        console.log('> add an item to list')
+    } else {
 
-        // add a list item to the current list
-        addItem(heading, currentList)
-    } else if (heading.depth < currentDepth && currentList.parent !== null) {
+        const link: Link = {
+            type: 'link',
+            title: null,
+            url: '#' + heading.id,
+            children: all(heading.children),
+        }
 
-        console.log('> go to parent list')
+        const paragraph: Paragraph = {
+            type: 'paragraph',
+            children: [link],
+        }
 
-        // make the parent of the currentList the new currentList
-        currentList = currentList.parent
-        // decrease the currentDepth by one
-        currentDepth--
-        // enter the function again
-        buildToc(heading, currentList, currentDepth, options)
+        listItem = {
+            type: 'listItem',
+            spread: false,
+            children: [paragraph]
+        }
+
     }
 
-    console.log('----------------------')
+    return listItem
 
 }
 
-const addItem = (heading: IHeadingResult, currentList: IListWithParentList) => {
-
-    const link: Link = {
-        type: 'link',
-        title: null,
-        url: '#' + heading.id,
-        children: all(heading.children),
-    }
-
-    const paragraph: Paragraph = {
-        type: 'paragraph',
-        children: [link],
-    }
-
-    const listItem: ListItem = {
-        type: 'listItem',
-        spread: false,
-        children: [paragraph]
-    }
-
-    currentList.children.push(listItem)
-
-}
-
-const addList = (currentList: IListWithParentList, item: ListItem, options: IMdxTocOptions): IListWithParentList => {
+const createList = (currentList: IListWithParentList, options: IMdxTocOptions): IListWithParentList => {
 
     const list: IListWithParentList = {
         type: 'list',
@@ -242,8 +262,6 @@ const addList = (currentList: IListWithParentList, item: ListItem, options: IMdx
         children: [],
         parent: currentList,
     }
-
-    item.children.push(list)
 
     return list
 
@@ -295,28 +313,26 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
 
         const mdast = ast as Root
 
-        const { mdx, placeholder, hasContainer, containerTagName, containerAttributes, hasNav, navAttributes, maxDepth, isListOrdered } = options
-
-        // default values
-        const mdxOption = mdx !== undefined ? mdx : true
-        const placeholderOption = placeholder !== undefined ? placeholder : '%toc%'
-        const hasContainerOption = hasContainer !== undefined ? hasContainer : true
-        const containerTagNameOption = containerTagName !== undefined ? containerTagName : 'aside'
-        const containerAttributesOption = containerAttributes !== undefined ? containerAttributes : {}
-        const hasNavOption = hasNav !== undefined ? hasNav : true
-        const navAttributesOption = navAttributes !== undefined ? navAttributes : {}
-        const maxDepthOption = maxDepth !== undefined ? maxDepth : 6
-        const isListOrderedOption = isListOrdered !== undefined ? isListOrdered : false
-
-        const mdxTocOptions: IMdxTocOptions = {
-            maxDepth: maxDepthOption,
-            isListOrdered: isListOrderedOption,
+        const defaultOptions: IRemarkTableOfContentsInternalOptions = {
+            mdx: true,
+            containerTagName: 'aside',
+            hasContainer: true,
+            containerAttributes: {},
+            hasNav: true,
+            navAttributes: {},
+            placeholder: '%toc%',
+            maxDepth: 6,
+            isListOrdered: false,
         }
 
-        //const result = toc(mdast, remarkTocOptions)
-        const result = mdxToc(mdast, mdxTocOptions)
+        const internalOptions = Object.assign({}, defaultOptions, options)
 
-        console.log(result)
+        const mdxTocOptions: IMdxTocOptions = {
+            maxDepth: internalOptions.maxDepth,
+            isListOrdered: internalOptions.isListOrdered,
+        }
+
+        const result = mdxToc(mdast, mdxTocOptions)
 
         const list = result.map
 
@@ -326,29 +342,29 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
 
         // find the placeholder
         const index = mdast.children.findIndex(
-            (node) => node.type === 'paragraph' && node.children[0].type === 'text' && node.children[0].value === placeholderOption
+            (node) => node.type === 'paragraph' && node.children[0].type === 'text' && node.children[0].value === internalOptions.placeholder
         )
 
         if (index === -1) {
             return
         }
 
-        if (!isValidElement(containerTagNameOption)) {
+        if (!isValidElement(internalOptions.containerTagName)) {
             return
         }
 
-        const containerAttributesSanitized = sanitizeAttributes(containerAttributesOption)
-        const navAttributesSanitized = sanitizeAttributes(navAttributesOption)
+        const containerAttributesSanitized = sanitizeAttributes(internalOptions.containerAttributes)
+        const navAttributesSanitized = sanitizeAttributes(internalOptions.navAttributes)
 
         const children: Content[] = []
 
         children.push(...mdast.children.slice(0, index))
 
-        if (mdxOption) {
+        if (internalOptions.mdx) {
 
             let navElement: MdxJsxFlowElement | undefined
 
-            if (hasNavOption) {
+            if (internalOptions.hasNav) {
                 let navAttributesMdx: MdxJsxAttribute[] = []
 
                 navAttributesMdx = navAttributesSanitized.map((attribute) => {
@@ -367,7 +383,7 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
                 }
             }
 
-            if (hasContainerOption) {
+            if (internalOptions.hasContainer) {
 
                 let containerAttributesMdx: MdxJsxAttribute[] = []
 
@@ -381,7 +397,7 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
 
                 const containerElement: MdxJsxFlowElement = {
                     type: 'mdxJsxFlowElement',
-                    name: containerTagNameOption,
+                    name: internalOptions.containerTagName,
                     children: [navElement !== undefined ? navElement : list],
                     attributes: containerAttributesMdx
                 }
@@ -391,16 +407,16 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
                 children.push(navElement !== undefined ? navElement : list)
             }
         } else {
-            if (hasContainerOption) {
+            if (internalOptions.hasContainer) {
 
                 const containerAttributesHtml = stringifyAttributes(containerAttributesSanitized)
 
                 children.push({
                     type: 'html',
-                    value: `<${containerTagNameOption}${containerAttributesHtml}>`,
+                    value: `<${internalOptions.containerTagName}${containerAttributesHtml}>`,
                 })
             }
-            if (hasNavOption) {
+            if (internalOptions.hasNav) {
 
                 const navAttributesHtml = stringifyAttributes(navAttributesSanitized)
 
@@ -410,16 +426,16 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
                 })
             }
             children.push(list)
-            if (hasNavOption) {
+            if (internalOptions.hasNav) {
                 children.push({
                     type: 'html',
                     value: '</nav>',
                 })
             }
-            if (hasContainerOption) {
+            if (internalOptions.hasContainer) {
                 children.push({
                     type: 'html',
-                    value: `</${containerTagNameOption}>`,
+                    value: `</${internalOptions.containerTagName}>`,
                 })
             }
         }

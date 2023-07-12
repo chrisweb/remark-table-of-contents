@@ -110,7 +110,12 @@ all options have default values which for most use cases should be enough, meani
 
 ## TODOs
 
-* right now the toc placeholder can not be inside of something, for example if you put it into an HTML element then the plugin won't find the placeholder, maybe replacing my simple search with [unist-util-visit](https://www.npmjs.com/package/unist-util-visit) could allow devs to put the toc inside whatever they want!?
+* can we also search for h1-h6 jsx if the mode is mdx
+* what happens if first depth is for example 3 and not 1
+* do we need a slugger, does the rehype slug not already do what we need
+* if we have two headings with same title does rehype slugger fix it for us
+* add a min depth option
+* check what options remark toc has, maybe there is a feature we could add
 
 ## contributing
 
