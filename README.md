@@ -110,12 +110,13 @@ all options have default values which for most use cases should be enough, meani
 
 ## TODOs
 
-* can we also search for h1-h6 jsx if the mode is mdx
 * what happens if first depth is for example 3 and not 1
+* can we also search for h1-h6 jsx if the mode is mdx
 * do we need a slugger, does the rehype slug not already do what we need
 * if we have two headings with same title does rehype slugger fix it for us
 * add a min depth option
 * check what options remark toc has, maybe there is a feature we could add
+* check the readme, especially the options list might need an update
 
 ## contributing
 
