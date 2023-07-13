@@ -149,7 +149,7 @@ all options have default values which for most use cases should be enough, meani
 
 ## BUGS
 
-if you find a bug, please open an issue in the [remark-table-of-contents issues page on github](https://github.com/chrisweb/remark-table-of-contents/issues), try to describe the bug you encountered as best as you can and if possible add some examples of the mdx content or code that you used when you found the bug, I or a contributor will try to look into it asap
+if you find a bug, please open an issue in the [remark-table-of-contents issues page on github](https://github.com/chrisweb/remark-table-of-contents/issues), try to describe the bug you encountered as best as you can and if possible add some examples of the markdown / mdx content or code that you used when you found the bug, I or a contributor will try to look into it asap
 
 ## contributing
 
