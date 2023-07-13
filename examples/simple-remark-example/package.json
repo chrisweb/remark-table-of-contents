@@ -1,0 +1,16 @@
+{
+    "name": "simple-markdown-example",
+    "version": "0.1.0",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "author": "chrisweb (https://chris.lu)",
+    "license": "MIT",
+    "dependencies": {
+        "remark": "14.0.3",
+        "to-vfile": "8.0.0"
+    }
+}
