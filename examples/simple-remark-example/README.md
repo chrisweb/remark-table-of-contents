@@ -1,4 +1,4 @@
-# next-js-example
+# remark example
 
 ## introduction
 
