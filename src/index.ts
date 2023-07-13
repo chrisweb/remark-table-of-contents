@@ -5,9 +5,8 @@ import { htmlEscape } from 'escape-goat'
 import { visit } from 'unist-util-visit'
 import { visitParents } from 'unist-util-visit-parents'
 import Slugger from 'github-slugger'
-import type { Root, Content, List, ListItem, Paragraph, Link, PhrasingContent, StaticPhrasingContent } from 'mdast'
+import type { Root, RootContent, List, ListItem, Paragraph, Link, PhrasingContent } from 'mdast'
 import { toString } from 'mdast-util-to-string'
-import extend from 'extend'
 
 export type IHtmlAttributes = Record<string, string | number | boolean | readonly string[]>
 
@@ -275,48 +274,6 @@ const createList = (currentList: IListWithParentList | null, options: IMdxTocOpt
 
 }
 
-/* followingt code is a copy from mdast-util-toc */
-const all = (nodes: PhrasingContent[]): StaticPhrasingContent[] => {
-
-    let result: StaticPhrasingContent[] = []
-    let index = -1
-
-    if (nodes) {
-        while (++index < nodes.length) {
-            result = result.concat(one(nodes[index]))
-        }
-    }
-
-    return result
-}
-
-
-const one = (node: PhrasingContent): StaticPhrasingContent | StaticPhrasingContent[] => {
-    if (node.type === 'footnoteReference') {
-        return []
-    }
-
-    if (
-        node.type === 'link' ||
-        node.type === 'linkReference' ||
-        node.type === 'footnote'
-    ) {
-        return all(node.children)
-    }
-
-    if ('children' in node) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { children, position, ...copy } = node
-        return Object.assign(extend(true, {}, copy), { children: all(node.children) })
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { position, ...copy } = node
-
-    return extend(true, {}, copy)
-
-}
-
 const findPlaceholderParent = (root: Root, internalOptions: IRemarkTableOfContentsInternalOptions): Root | MdxJsxFlowElement => {
 
     let placeholderParent: Root | MdxJsxFlowElement = root
@@ -327,7 +284,7 @@ const findPlaceholderParent = (root: Root, internalOptions: IRemarkTableOfConten
             if (ancestor.type === 'mdxJsxFlowElement') {
                 placeholderParent = ancestor
             }
-            
+
         }
     })
 
@@ -388,7 +345,7 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
         const containerAttributesSanitized = sanitizeAttributes(internalOptions.containerAttributes)
         const navAttributesSanitized = sanitizeAttributes(internalOptions.navAttributes)
 
-        const children: Content[] = []
+        const children: RootContent[] = []
 
         children.push(...placeholderParent.children.slice(0, index))
 
@@ -478,6 +435,47 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
 
     }
 
+}
+
+/* followingt code is a copy from mdast-util-toc */
+function all(nodes: PhrasingContent[]): PhrasingContent[] {
+
+    const results: PhrasingContent[] = []
+    let index = -1
+
+    while (++index < nodes.length) {
+        const result = one(nodes[index])
+
+        if (Array.isArray(result)) {
+            results.push(...result)
+        } else {
+            results.push(result)
+        }
+    }
+
+    return results
+}
+
+function one(node: PhrasingContent): PhrasingContent[] | PhrasingContent {
+    if (node.type === 'footnoteReference') {
+        return []
+    }
+
+    if (node.type === 'link' || node.type === 'linkReference') {
+        return all(node.children)
+    }
+
+    if ('children' in node) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { children, position, ...copy } = node
+        return Object.assign(structuredClone(copy), {
+            children: all(node.children)
+        })
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { position, ...copy } = node
+    return structuredClone(copy)
 }
 
 export { remarkTableOfContents }
