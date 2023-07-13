@@ -6,7 +6,17 @@ const nextConfig = (/*phase*/) => {
     const withMDX = WithMDX({
         extension: /\.mdx?$/,
         options: {
-            remarkPlugins: [[remarkTableOfContents, { navAttributes: { 'aria-label': 'table of contents' } }]],
+            remarkPlugins: [[remarkTableOfContents, { 
+                containerAttributes: { 
+                    id: 'myCustomId',
+                    class: ['myFirstCssClass', 'mySecondCssClass'],
+                },
+                navAttributes: {
+                    'aria-label': 'table of contents'
+                },
+                minDepth: 2,
+                maxDepth: 4,
+            }]],
             rehypePlugins: [],
         },
     })

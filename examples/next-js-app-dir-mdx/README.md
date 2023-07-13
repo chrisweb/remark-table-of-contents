@@ -25,3 +25,8 @@ to start the dev server, use your terminal and then go into the root of this exa
 use the following command if you want to lint the code files:
 
 `npm run lint`
+
+## examples
+
+* http://localhost:3000/ is the homepage, it is an MDX page with an `<article>` element around the content, the toc placeholder is also inside of the `<article>` element
+* http://localhost:3000/example-min-depth-not-1 is the second example, this example has headings that don't start at a depth of 1
