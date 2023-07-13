@@ -1,6 +1,7 @@
 import type { Plugin } from 'unified';
 export type IHtmlAttributes = Record<string, string | number | boolean | readonly string[]>;
 export interface IMdxTocOptions {
+    minDepth: number;
     maxDepth: number;
     isListOrdered: boolean;
 }
@@ -12,6 +13,7 @@ export interface IRemarkTableOfContentsOptions {
     hasNav?: boolean;
     navAttributes?: IHtmlAttributes;
     placeholder?: string;
+    minDepth?: number;
     maxDepth?: number;
     isListOrdered?: boolean;
 }
