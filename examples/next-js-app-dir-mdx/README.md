@@ -1,4 +1,4 @@
-# next-js-example
+# next.js App router example with @next/mdx
 
 ## introduction
 
