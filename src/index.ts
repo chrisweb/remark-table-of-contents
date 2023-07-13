@@ -3,14 +3,16 @@ import type { MdxJsxFlowElement, MdxJsxAttribute } from 'mdast-util-mdx-jsx'
 import { isElement, Element } from 'hast-util-is-element'
 import { htmlEscape } from 'escape-goat'
 import { visit } from 'unist-util-visit'
+import { visitParents } from 'unist-util-visit-parents'
 import Slugger from 'github-slugger'
-import type { Root, Content, List, ListItem, Paragraph, Link, PhrasingContent, StaticPhrasingContent, ThematicBreak } from 'mdast'
+import type { Root, Content, List, ListItem, Paragraph, Link, PhrasingContent, StaticPhrasingContent } from 'mdast'
 import { toString } from 'mdast-util-to-string'
 import extend from 'extend'
 
 export type IHtmlAttributes = Record<string, string | number | boolean | readonly string[]>
 
 export interface IMdxTocOptions {
+    minDepth: number
     maxDepth: number
     isListOrdered: boolean
 }
@@ -37,6 +39,7 @@ export interface IRemarkTableOfContentsOptions {
     hasNav?: boolean
     navAttributes?: IHtmlAttributes
     placeholder?: string
+    minDepth?: number
     maxDepth?: number
     isListOrdered?: boolean
 }
@@ -49,6 +52,7 @@ interface IRemarkTableOfContentsInternalOptions {
     hasNav: boolean
     navAttributes: IHtmlAttributes
     placeholder: string
+    minDepth: number
     maxDepth: number
     isListOrdered: boolean
 }
@@ -117,7 +121,7 @@ const findHeadings = (tree: Root, options: IMdxTocOptions): IHeadingResult[] => 
 
     visit(tree, 'heading', node => {
 
-        if (node.depth <= options.maxDepth) {
+        if (node.depth >= options.minDepth && node.depth <= options.maxDepth) {
 
             const nodeAsString = toString(node)
             const headingId = slugger.slug(nodeAsString)
@@ -308,14 +312,34 @@ const one = (node: PhrasingContent): StaticPhrasingContent | StaticPhrasingConte
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { position, ...copy } = node
+
     return extend(true, {}, copy)
+
+}
+
+const findPlaceholderParent = (root: Root, internalOptions: IRemarkTableOfContentsInternalOptions): Root | MdxJsxFlowElement => {
+
+    let placeholderParent: Root | MdxJsxFlowElement = root
+
+    visitParents(root, 'paragraph', function (node, ancestors) {
+        if (node.children[0].type === 'text' && node.children[0].value === internalOptions.placeholder) {
+            const ancestor = ancestors[ancestors.length - 1]
+            if (ancestor.type === 'mdxJsxFlowElement') {
+                placeholderParent = ancestor
+            }
+            
+        }
+    })
+
+    return placeholderParent
+
 }
 
 const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfContentsOptions = {}): Transformer {
 
     return async (ast) => {
 
-        const mdast = ast as Root
+        const root = ast as Root
 
         const defaultOptions: IRemarkTableOfContentsInternalOptions = {
             mdx: true,
@@ -325,6 +349,7 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
             hasNav: true,
             navAttributes: {},
             placeholder: '%toc%',
+            minDepth: 1,
             maxDepth: 6,
             isListOrdered: false,
         }
@@ -332,11 +357,12 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
         const internalOptions = Object.assign({}, defaultOptions, options)
 
         const mdxTocOptions: IMdxTocOptions = {
+            minDepth: internalOptions.minDepth,
             maxDepth: internalOptions.maxDepth,
             isListOrdered: internalOptions.isListOrdered,
         }
 
-        const result = mdxToc(mdast, mdxTocOptions)
+        const result = mdxToc(root, mdxTocOptions)
 
         const list = result.map
 
@@ -344,8 +370,10 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
             return
         }
 
-        // find the placeholder
-        const index = mdast.children.findIndex(
+        const placeholderParent = findPlaceholderParent(root, internalOptions)
+
+        // find the placeholder index
+        const index = placeholderParent.children.findIndex(
             (node) => node.type === 'paragraph' && node.children[0].type === 'text' && node.children[0].value === internalOptions.placeholder
         )
 
@@ -362,7 +390,7 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
 
         const children: Content[] = []
 
-        children.push(...mdast.children.slice(0, index))
+        children.push(...placeholderParent.children.slice(0, index))
 
         if (internalOptions.mdx) {
 
@@ -394,7 +422,7 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
                 containerAttributesMdx = containerAttributesSanitized.map((attribute) => {
                     return {
                         type: 'mdxJsxAttribute',
-                        name: attribute.name,
+                        name: attribute.name === 'class' ? 'className' : attribute.name,
                         value: attribute.value,
                     }
                 })
@@ -444,9 +472,9 @@ const remarkTableOfContents: Plugin = function plugin(options: IRemarkTableOfCon
             }
         }
 
-        children.push(...mdast.children.slice(index + 1))
+        children.push(...placeholderParent.children.slice(index + 1))
 
-        mdast.children = Array.prototype.concat(children)
+        placeholderParent.children = Array.prototype.concat(children)
 
     }
 
