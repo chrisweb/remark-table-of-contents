@@ -13,9 +13,7 @@ const nextConfig = (/*phase*/) => {
                 },
                 navAttributes: {
                     'aria-label': 'table of contents'
-                },
-                minDepth: 2,
-                maxDepth: 4,
+                }
             }]],
             rehypePlugins: [],
         },
