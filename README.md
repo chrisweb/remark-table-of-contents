@@ -162,6 +162,8 @@ all options have default values which for most use cases should be enough, meani
 ## TODOs
 
 * also search for h1-h6 (jsx) if the mode is mdx
+* would it be possible to autodetect if content is pure markdown or MDX instead of having an option the user needs to set manually if it is not mdx
+* should we add an option to disable the internal use of github slugger for users that don't want it
 
 ## BUGS
 
