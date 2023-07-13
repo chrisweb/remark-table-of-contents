@@ -19,13 +19,25 @@ npm i remark-table-of-contents --save-exact
 
 ## examples
 
-### with next.js
+### remark example
+
+pure markdown example
+
+Note: when using the remark-table-of-contents plugin, you need to set the option **mdx** to **false** which is what this example does
+
+check out the [readme of the remark example](./examples/simple-remark-example/README.md) for more details about this example, all the source code is located in `examples/simple-remark-example/`
+
+### example using next.js with @next/mdx
+
+Note: you will find a README with more details as well as all the source code I mention below, in the [examples/next-js-app-dir-mdx/](./examples/next-js-app-dir-mdx/README.md) directory
+
+in this [next.js MDX](https://nextjs.org/docs/app/building-your-application/configuring/mdx) example I will use the next.js >= 13 **App Router** with [@next/mdx](https://www.npmjs.com/package/@next/mdx)
 
 after [installing](#installation) **remark-table-of-contents**, edit your `next.config.mjs` file, import the plugin and finally add it to the remark plugins configuration:
 
 ```js
 import WithMDX from '@next/mdx'
-import { remarkTableOfContents } from 'remark-table-of-contents'
+import { remarkTableOfContents } from '../../dist/index.js'
 
 const nextConfig = (/*phase*/) => {
 
@@ -48,9 +60,7 @@ const nextConfig = (/*phase*/) => {
     /** @type {import('next').NextConfig} */
     const nextConfig = {
         experimental: {
-            // experimental support for next.js > 13 app directory
             appDir: true,
-            // experimental use rust compiler for MDX
             mdxRs: false,
         },
         pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
@@ -87,6 +97,7 @@ then create an mdx document, for example `app/articles/page.mdx` and add some co
 
 ```md
 <article>
+
 # Hello World!
 
 ## foo
@@ -106,6 +117,7 @@ the result will look like this:
 
 ```md
 <article>
+
 # Hello World!
 
 ## foo
@@ -115,12 +127,16 @@ the result will look like this:
 ### baz
 
 <aside id="myCustomId" class="myFirstCssClass mySecondCssClass">
-    <nav>
-        * [Hello World!](hello-world)
-            * [foo](#foo)
-            * [bar](#bar)
-                * [baz](#baz)
-    </nav>
+
+<nav aria-label="table of contents">
+
+*   [Hello World!](#hello-world)
+    *   [foo](#foo)
+    *   [bar](#bar)
+        *   [baz](#baz)
+
+</nav>
+
 </aside>
 
 <article>
