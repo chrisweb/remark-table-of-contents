@@ -23,7 +23,7 @@ npm i remark-table-of-contents --save-exact
 
 pure markdown example
 
-Note: when using the remark-table-of-contents plugin, you need to set the option **mdx** to **false** which is what this example does
+Note: when using the remark-table-of-contents plugin and your content is **markdown** (so when it is NOT MDX), you need to set the option **mdx** to **false** which is what this example does, for a full list of options check out the [options section](#options) below
 
 check out the [readme of the remark example](./examples/simple-remark-example/README.md) for more details about this example, all the source code is located in `examples/simple-remark-example/`
 
