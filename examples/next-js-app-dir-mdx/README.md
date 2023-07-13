@@ -2,7 +2,7 @@
 
 ## introduction
 
-this is a demo using the next.js framework
+this is a demo using the [next.js framework](https://github.com/vercel/next.js/)
 
 in the `/app` directory there is `page.mdx` file with some content to test the **remark table of contents** plugin
 
@@ -28,5 +28,5 @@ use the following command if you want to lint the code files:
 
 ## examples
 
-* http://localhost:3000/ is the homepage, it is an MDX page with an `<article>` element around the content, the toc placeholder is also inside of the `<article>` element
-* http://localhost:3000/example-min-depth-not-1 is the second example, this example has headings that don't start at a depth of 1
+* <http://localhost:3000/> is the homepage, it is an MDX page with an `<article>` element around the content, the toc placeholder is also inside of the `<article>` element
+* <http://localhost:3000/example-min-depth-not-1> is the second example, this example has headings that don't start at a depth of 1
