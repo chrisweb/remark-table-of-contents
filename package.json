@@ -8,7 +8,7 @@
         "lint": "npx eslint src/",
         "types": "tsc --declaration --emitDeclarationOnly --declarationDir dist"
     },
-    "author": "",
+    "author": "chrisweb (https://chris.lu)",
     "license": "MIT",
     "keywords": [
         "remark",
