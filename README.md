@@ -139,7 +139,7 @@ all options have default values which for most use cases should be enough, meani
 * `hasNav` (`boolean`, default: true) by default the toc is inside a `<nav>` element, set to false to not use the nav element
 * `navAttributes` (`object`, default {}) an object, where the keys are the attribute names and the values are the attribute values, allows you for example to add an `id` html attribute or a `class` attribute where the value is an array of class names
 * `placeholder` (`string`, default '%toc%') the placeholder that you insert into your markdown / MDX and that will get replaced by the toc
-* `minDepth` (`number`, default 1) the minimum depth to include in the table of contents, set it for example to 2, if you want to exlude the heading with a depth of 1 (`<h1>`)
+* `minDepth` (`number`, default 1) the minimum depth to include in the table of contents, set it for example to 2, if you want to exclude the heading with a depth of 1 (`<h1>`)
 * `maxDepth` (`number`, default 6) the maximum depth to include in the table of contents, set it for example to 4, then all headings that have a depth of 5 or 6 will get excluded from the table of contents list
 * `isListOrdered` (`boolean`, default false) use an ordered list `<ol>` or an unordered list `<ul>`
 
