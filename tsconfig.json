@@ -9,13 +9,13 @@
         "exactOptionalPropertyTypes": true,
         "forceConsistentCasingInFileNames": true,
         "lib": [
-            "ES2020",
-            "DOM"
+            "DOM",
+            "ES2022"
         ],
         "module": "NodeNext",
         "esModuleInterop": true,
         "strict": true,
-        "target": "ESNext",
+        "target":"ES2022",
         "jsx": "preserve",
         "outDir": "./dist",
         "moduleResolution": "nodenext",
