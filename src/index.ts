@@ -1,11 +1,12 @@
 import type { Plugin, Transformer } from 'unified'
 import type { MdxJsxFlowElement, MdxJsxAttribute } from 'mdast-util-mdx-jsx'
-import { isElement, Element } from 'hast-util-is-element'
+import type { Root, RootContent, List, ListItem, Paragraph, Link, PhrasingContent } from 'mdast'
+import type { Element } from 'hast'
+import { isElement } from 'hast-util-is-element'
 import { htmlEscape } from 'escape-goat'
 import { visit } from 'unist-util-visit'
 import { visitParents } from 'unist-util-visit-parents'
 import Slugger from 'github-slugger'
-import type { Root, RootContent, List, ListItem, Paragraph, Link, PhrasingContent } from 'mdast'
 import { toString } from 'mdast-util-to-string'
 
 export type IHtmlAttributes = Record<string, string | number | boolean | readonly string[]>
@@ -65,7 +66,8 @@ const isValidElement = (tagName: string) => {
     const element: Element = {
         type: 'element',
         tagName: tagName,
-        children: []
+        children: [],
+        properties: {},
     }
 
     // check if hast thinks the element is valid
