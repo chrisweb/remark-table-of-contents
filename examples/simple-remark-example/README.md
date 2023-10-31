@@ -2,7 +2,7 @@
 
 ## introduction
 
-this is a demo using the [remark](https://github.com/remarkjs/remark)
+this is a demo using [remark](https://github.com/remarkjs/remark)
 
 the `content.md` file contains some basic markdown content to test the **remark table of contents** plugin
 
