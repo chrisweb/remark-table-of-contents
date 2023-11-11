@@ -5,6 +5,7 @@ module.exports = {
         node: true
     },
     extends: [
+        'next/babel',
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended'
     ],
