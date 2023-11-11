@@ -22,7 +22,6 @@ const nextConfig = (/*phase*/) => {
     /** @type {import('next').NextConfig} */
     const nextConfig = {
         experimental: {
-            appDir: true,
             mdxRs: false,
         },
         pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
