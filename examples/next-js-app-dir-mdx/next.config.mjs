@@ -6,8 +6,8 @@ const nextConfig = (/*phase*/) => {
     const withMDX = createMDX({
         extension: /\.mdx?$/,
         options: {
-            remarkPlugins: [[remarkTableOfContents, { 
-                containerAttributes: { 
+            remarkPlugins: [[remarkTableOfContents, {
+                containerAttributes: {
                     id: 'myCustomId',
                     class: ['myFirstCssClass', 'mySecondCssClass'],
                 },
