@@ -1,9 +1,9 @@
-import WithMDX from '@next/mdx'
+import createMDX from '@next/mdx'
 import { remarkTableOfContents } from '../../dist/index.js'
 
 const nextConfig = (/*phase*/) => {
 
-    const withMDX = WithMDX({
+    const withMDX = createMDX({
         extension: /\.mdx?$/,
         options: {
             remarkPlugins: [[remarkTableOfContents, { 
