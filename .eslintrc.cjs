@@ -5,7 +5,6 @@ module.exports = {
         node: true
     },
     extends: [
-        'next/babel',
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended'
     ],
@@ -20,6 +19,11 @@ module.exports = {
         '@typescript-eslint'
     ],
     root: true,
+    ignorePatterns: [
+        'node_modules/',
+        'dist/',
+        'examples/',
+    ],
     rules: {
         quotes: [
             'error',
