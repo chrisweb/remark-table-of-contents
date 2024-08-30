@@ -17,6 +17,14 @@ Note: if you use this plugin, it is highly recommended that you also use [rehype
 npm i remark-table-of-contents --save-exact
 ```
 
+## Demo
+
+You can now see a live demo of this plugin on my blog, especially in my web_development [chris.lu/web_development](https://chris.lu/web_development) section
+
+I also published a Next.js [Next.js static MDX blog](http://localhost:3000/web_development/tutorials/next-js-static-mdx-blog) tutorial on my blog, the [remark-table-of-contents](https://chris.lu/web_development/tutorials/next-js-static-mdx-blog/github-like-alerts-plugin) page is about how to use **remark-table-of-contents** with **next/js**
+
+In the chapter [Highlight the toc link to the current heading](https://chris.lu/web_development/tutorials/next-js-static-mdx-blog/table-of-contents-plugin#highlight-the-toc-link-to-the-current-heading) I have an example of how to hightlight the table of contents link that corresponds to the heading that is currently visible, by creating a React hook and a React component
+
 ## examples
 
 ### remark example
