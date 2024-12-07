@@ -5,11 +5,13 @@
 
 remark plugin that generates a **table of contents** (toc) based on the headlines in your document, the toc then gets inserted in your markdown or mdx documents via a placeholder
 
-Note: works with pure markdown as well as MDX, so far it has been tested in next.js 13.x (see [examples folder](./examples/next-js-app-dir-mdx/README.md) for a demo)
+> [!NOTE]  
+> works with pure markdown as well as MDX, so far it has been tested in next.js 13.x (see [examples folder](./examples/next-js-app-dir-mdx/README.md) for a demo)
 
 this is a zero configuration package as all [options](#options) have defaults, but you can use them if you wish to modify default behavior, like for example by default the table of contents (toc) headings list is surrounded by an `<aside id="tocContainer"></aside>` html element and inside of it there is a `<nav></nav>` html element which you can disable via the options if that's what you prefer, you can also use the options to rename the container and you can use them to add attributes to the container and the nav element, check out the [options section](#options) below for a full list of available options
 
-Note: if you use this plugin, it is highly recommended that you also use [rehype-slug](https://www.npmjs.com/package/rehype-slug) to add unique IDs to all headings which don't already have one (it uses [github-slugger](https://www.npmjs.com/package/github-slugger) under the hood) and also [rehype-autolink-headings](https://www.npmjs.com/package/rehype-autolink-headings) which is another rehype plugin that will automatically add links to your headings back to themselves (to create the feature you often see on blogs or in documentations, that allows you click on a heading which turns the browser URL into the a URL containing the heading ID and then you can copy the URL from the browser to share with someone)
+> [!NOTE]  
+> if you use this plugin, it is highly recommended that you also use [rehype-slug](https://www.npmjs.com/package/rehype-slug) to add unique IDs to all headings which don't already have one (it uses [github-slugger](https://www.npmjs.com/package/github-slugger) under the hood) and also [rehype-autolink-headings](https://www.npmjs.com/package/rehype-autolink-headings) which is another rehype plugin that will automatically add links to your headings back to themselves (to create the feature you often see on blogs or in documentations, that allows you click on a heading which turns the browser URL into the a URL containing the heading ID and then you can copy the URL from the browser to share with someone)
 
 ## installation
 
@@ -23,25 +25,29 @@ You can now see a live demo of this plugin on my blog, especially in my web_deve
 
 I also published a Next.js [Next.js static MDX blog](http://localhost:3000/web_development/tutorials/next-js-static-mdx-blog) tutorial on my blog, the [remark-table-of-contents](https://chris.lu/web_development/tutorials/next-js-static-mdx-blog/github-like-alerts-plugin) page is about how to use **remark-table-of-contents** with **next/js**
 
-In the chapter [Highlight the toc link to the current heading](https://chris.lu/web_development/tutorials/next-js-static-mdx-blog/table-of-contents-plugin#highlight-the-toc-link-to-the-current-heading) I have an example of how to hightlight the table of contents link that corresponds to the heading that is currently visible, by creating a React hook and a React component
+In the chapter [Highlight the toc link to the current heading](https://chris.lu/web_development/tutorials/next-js-static-mdx-blog/table-of-contents-plugin#highlight-the-toc-link-to-the-current-heading) I have an example of how to highlight the table of contents link that corresponds to the heading that is currently visible, by creating a React hook and a React component
 
 ## examples
 
 ### remark example
 
-pure markdown example
+This a pure **markdown** example, in the example we use remark to parse a markdown document and add remark-table-of-contents as plugin, then we print out the result
 
-Note: when using the remark-table-of-contents plugin and your content is **markdown** (so when it is NOT MDX), you need to set the option **mdx** to **false** which is what this example does, for a full list of options check out the [options section](#options) below
+> [!TIP]  
+> when using the remark-table-of-contents plugin and your content is **markdown** (so when it is NOT MDX), you need to set the option **mdx** to **false** which is what this example does, for a full list of options check out the [options section](#options) below
 
 check out the [readme of the remark example](./examples/simple-remark-example/README.md) for more details about this example, all the source code is located in `examples/simple-remark-example/`
 
 ### example using next.js with @next/mdx
 
-Note: you will find a README with more details as well as all the source code I mention below, in the [examples/next-js-app-dir-mdx/](./examples/next-js-app-dir-mdx/README.md) directory
+> [!NOTE]  
+> you will find a README with more details as well as all the source code I mention below, in the [examples/next-js-app-dir-mdx/](./examples/next-js-app-dir-mdx/README.md) directory
 
-in this [next.js MDX](https://nextjs.org/docs/app/building-your-application/configuring/mdx) example I will use the next.js >= 13 **App Router** with [@next/mdx](https://www.npmjs.com/package/@next/mdx)
+This [next.js MDX](https://nextjs.org/docs/app/building-your-application/configuring/mdx) example uses the next.js **App Router** with [@next/mdx](https://www.npmjs.com/package/@next/mdx)
 
-after [installing](#installation) **remark-table-of-contents**, edit your `next.config.mjs` file, import the plugin and finally add it to the remark plugins configuration:
+To use this plugin with @next/mdx you first need to [install](#installation) the **remark-table-of-contents** plugin
+
+Then edit your `next.config.mjs` file, import the plugin and finally add it to the remark plugins configuration:
 
 ```js
 import WithMDX from '@next/mdx'
@@ -81,7 +87,8 @@ const nextConfig = (/*phase*/) => {
 export default nextConfig
 ```
 
-Note: I have customized the (aside) container element by adding some attributes, for a full list of options check out the [options section](#options) below
+> [!NOTE]  
+> I have customized the (aside) container element by adding some attributes, for a full list of options check out the [options section](#options) below
 
 As you can see we added an ID as well as classes to the **aside** container, you can then use those to apply your own custom css rules to table of contents, for example you might want to position it on the right and make it "sticky" so it won't move even when the user scrolls down, then you could add some css like this:
 
@@ -119,7 +126,8 @@ then create an mdx document, for example `app/articles/page.mdx` and add some co
 <article>
 ```
 
-Note: you can put the toc wherever you want and you can change the placeholder via the plugin options if you prefer some other string instead of the default one
+> [!NOTE]  
+> you can put the toc wherever you want and you can change the placeholder via the plugin options if you prefer some other string instead of the default one
 
 the result will look like this:
 
