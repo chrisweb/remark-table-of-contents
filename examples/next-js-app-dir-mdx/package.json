@@ -11,18 +11,18 @@
     },
     "dependencies": {
         "@mdx-js/loader": "^3.1.0",
-        "@next/mdx": "^15.0.4",
-        "next": "^15.0.4",
+        "@next/mdx": "^15.2.3",
+        "next": "^15.2.3",
         "react": "^19.0.0",
         "react-dom": "^19.0.0"
     },
     "devDependencies": {
-        "@types/node": "22.10.1",
-        "@types/react": "19.0.1",
-        "@types/react-dom": "19.0.1",
-        "eslint": "9.16.0",
-        "eslint-config-next": "15.0.4",
-        "typescript": "5.7.2"
+        "@types/node": "22.13.11",
+        "@types/react": "19.0.12",
+        "@types/react-dom": "19.0.4",
+        "eslint": "9.23.0",
+        "eslint-config-next": "15.2.3",
+        "typescript": "5.8.2"
     },
     "author": "chrisweb (https://chris.lu)",
     "license": "MIT"
